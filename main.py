@@ -163,6 +163,308 @@ QUESTIONS += [
     {"id": 100, "text": "Для запроса WHERE category = 'books' AND price BETWEEN 10 AND 50 какой частичный индекс будет эффективен?", "options": ["CREATE INDEX idx ON products (price) WHERE category = 'books'", "CREATE INDEX idx ON products (category, price)", "CREATE INDEX idx ON products (price)", "CREATE INDEX idx ON products (category)"], "correct": 1}
 ]
 
+QUESTIONS += [
+    # 101. Параллельное выполнение запросов
+    {"id": 101, "text": "Как в PostgreSQL включить параллельное выполнение для агрегатных функций?", "options": ["SET max_parallel_workers_per_gather = 4;", "ENABLE PARALLEL QUERY;", "ALTER SYSTEM SET parallel_aggregate = true;", "Использовать PARALLEL HINT"], "correct": 1},
+    
+    # 102. Гипертаблицы TimescaleDB
+    {"id": 102, "text": "Что такое chunk в гипертаблице TimescaleDB?", "options": ["Отдельная таблица для каждого интервала времени", "Индекс для временных данных", "Раздел партиции по хешу", "Кэш для агрегатов"], "correct": 1},
+    
+    # 103. Репликация
+    {"id": 103, "text": "Какой тип репликации в PostgreSQL позволяет читать данные с реплики?", "options": ["Логическая репликация", "Физическая репликация", "Синхронная репликация", "Асинхронная репликация"], "correct": 2},
+    
+    # 104. Хранимые процедуры
+    {"id": 104, "text": "Как вернуть табличный результат из хранимой процедуры в PostgreSQL?", "options": ["RETURNS TABLE", "OUT параметры", "RETURN QUERY", "SETOF record"], "correct": 3},
+    
+    # 105. Миграции
+    {"id": 105, "text": "Что делает миграция с idempotent = true в Flyway?", "options": ["Запускается только один раз", "Можно запускать многократно без ошибок", "Откатывается автоматически при ошибке", "Не влияет на данные"], "correct": 2},
+    
+    # 106. Безопасность
+    {"id": 106, "text": "Как защититься от атаки 'time-based SQL injection'?", "options": ["Использовать параметризованные запросы", "Ограничить время выполнения запроса", "Отключить UNION операторы", "Включить strict mode"], "correct": 2},
+    
+    # 107. OLAP-функции
+    {"id": 107, "text": "Как вычислить процентное изменение продаж относительно предыдущего периода?", "options": ["(sales - LAG(sales) OVER (ORDER BY date)) / LAG(sales) OVER (ORDER BY date)", "PERCENT_CHANGE(sales)", "sales / PREV(sales) - 1", "Использовать PCT_CHANGE()"], "correct": 1},
+    
+    # 108. Индексы
+    {"id": 108, "text": "Для какого случая оптимален BRIN-индекс в PostgreSQL?", "options": ["Маленькие таблицы с частыми обновлениями", "Большие таблицы с упорядоченными данными (временные ряды)", "Таблицы с высокой кардинальностью", "JSONB-колонки"], "correct": 2},
+    
+    # 109. JSON
+    {"id": 109, "text": "Как в MySQL создать виртуальный генерируемый столбец для JSON-поля 'data' -> '$.price'?", "options": ["ALTER TABLE orders ADD price INT AS (JSON_UNQUOTE(JSON_EXTRACT(data, '$.price'))) VIRTUAL;", "CREATE INDEX idx_price ON orders (data->'$.price');", "ADD COLUMN price GENERATED ALWAYS AS (data->'$.price')", "Использовать JSON_TABLE()"], "correct": 1},
+    
+    # 110. Блокировки
+    {"id": 110, "text": "Какой тип блокировки возникает при SELECT FOR UPDATE в REPEATABLE READ?", "options": ["ROW SHARE", "ROW EXCLUSIVE", "SHARE UPDATE EXCLUSIVE", "ACCESS EXCLUSIVE"], "correct": 2},
+    
+    # 111. Системные представления
+    {"id": 111, "text": "Как найти неиспользуемые индексы в PostgreSQL?", "options": ["SELECT * FROM pg_stat_user_indexes WHERE idx_scan = 0;", "pg_unused_indexes()", "EXPLAIN ANALYZE без использования индекса", "pg_stat_reset()"], "correct": 1},
+    
+    # 112. Репликация данных
+    {"id": 112, "text": "Что такое WAL в контексте PostgreSQL?", "options": ["Write-Ahead Logging", "Web Application Layer", "Weighted Average Load", "Windows Authentication Library"], "correct": 1},
+    
+    # 113. Оконные функции
+    {"id": 113, "text": "Какое поведение у RANGE vs ROWS в оконных функциях?", "options": ["RANGE использует значения, ROWS - физические строки", "ROWS работает только с датами", "RANGE не поддерживает PRECEDING", "Нет разницы"], "correct": 1},
+    
+    # 114. Триггеры
+    {"id": 114, "text": "Какой триггер сработает при выполнении UPDATE только если изменилось поле 'price'?", "options": ["WHEN (OLD.price IS DISTINCT FROM NEW.price)", "IF UPDATE(price) THEN", "ON CHANGE OF price", "WHEN (price CHANGED)"], "correct": 1},
+    
+    # 115. Полнотекстовый поиск
+    {"id": 115, "text": "Как в PostgreSQL настроить веса для разных полей в полнотекстовом поиске?", "options": ["setweight(to_tsvector('english', title), 'A') || setweight(to_tsvector('english', body), 'B')", "CONFIGURE WEIGHTS (title=0.7, body=0.3)", "USING WEIGHT(title, 1.0) + WEIGHT(body, 0.5)", "Веса настраиваются в конфигурации словаря"], "correct": 1},
+    
+    # 116. Оптимизация
+    {"id": 116, "text": "Какой хинт в Oracle принудительно использует индекс для таблицы?", "options": ["/*+ INDEX(orders idx_orders_date) */", "FORCE INDEX idx_orders_date", "USE INDEX(idx_orders_date)", "HINT INDEX = idx_orders_date"], "correct": 1},
+    
+    # 117. Геоданные
+    {"id": 117, "text": "Как найти все точки в радиусе 10 км от заданных координат в PostGIS?", "options": ["ST_DWithin(location, ST_Point(37.6,55.7)::geography, 10000)", "ST_Buffer(ST_Point(37.6,55.7), 10)", "ST_Distance(location, ST_Point(37.6,55.7)) < 10", "ST_Contains(ST_Buffer(...), location)"], "correct": 1},
+    
+    # 118. Распределенные транзакции
+    {"id": 118, "text": "Что такое двухфазный коммит (2PC)?", "options": ["Протокол для распределенных транзакций", "Метод репликации данных", "Тип блокировки в БД", "Алгоритм сжатия WAL"], "correct": 1},
+    
+    # 119. Материализованные представления
+    {"id": 119, "text": "Как часто обновлять материализованное представление для отчетов в реальном времени?", "options": ["Каждые 5 минут через cron", "При каждом изменении исходных данных через триггеры", "Использовать Continuous Aggregates в TimescaleDB", "Только вручную"], "correct": 3},
+    
+    # 120. Шардинг
+    {"id": 120, "text": "Какой ключ шардирования оптимален для таблицы пользователей с глобальным распределением?", "options": ["user_id (хеш)", "country_code (лист)", "created_at (диапазон)", "email_domain (хеш)"], "correct": 1},
+    
+    # 121. Сравнение СУБД
+    {"id": 121, "text": "Какая СУБД поддерживает нативные JSON-документы с индексацией вложенных полей?", "options": ["MongoDB", "MySQL 8.0+", "PostgreSQL с jsonb", "Все перечисленные"], "correct": 4},
+    
+    # 122. Временные таблицы
+    {"id": 122, "text": "Чем отличается TEMPORARY TABLE от UNLOGGED TABLE в PostgreSQL?", "options": ["TEMP таблицы существуют только в сессии, UNLOGGED - постоянно но без WAL", "UNLOGGED работает быстрее, но данные теряются при сбое", "TEMP таблицы видны только в транзакции", "Нет разницы"], "correct": 1},
+    
+    # 123. Аудит
+    {"id": 123, "text": "Как отследить все DELETE операции в таблице без триггеров?", "options": ["pgAudit расширение", "Включить лог минимума", "Использовать логический декодинг", "Все варианты верны"], "correct": 4},
+    
+    # 124. Производительность
+    {"id": 124, "text": "Что означает 'Seq Scan' в EXPLAIN ANALYZE?", "options": ["Последовательное чтение таблицы", "Сканирование по индексу", "Соединение по последовательности", "Сортировка результатов"], "correct": 1},
+    
+    # 125. Работа с NULL
+    {"id": 125, "text": "Какой результат: SELECT 1 WHERE NULL = NULL?", "options": ["0 строк", "1 строка", "Ошибка", "Зависит от настроек ANSI_NULLS"], "correct": 1},
+    
+    # 126. Параметризованные запросы
+    {"id": 126, "text": "Почему параметризованные запросы защищают от SQL-инъекций?", "options": ["Данные передаются отдельно от команд", "Экранируют все спецсимволы", "Проверяют типы данных", "Ограничивают длину ввода"], "correct": 1},
+    
+    # 127. Миграции схемы
+    {"id": 127, "text": "Как безопасно добавить NOT NULL столбец в большую таблицу?", "options": ["Добавить с DEFAULT значением, затем убрать DEFAULT", "Использовать ONLINE DDL в MySQL", "Создать новую таблицу и перенести данные", "Все варианты верны"], "correct": 4},
+    
+    # 128. Системные функции
+    {"id": 128, "text": "Как получить информацию о блокировках в PostgreSQL?", "options": ["SELECT * FROM pg_locks;", "pg_blocking_pids()", "SHOW LOCKS;", "pg_stat_activity с wait_event_type = 'Lock'"], "correct": 4},
+    
+    # 129. CTE
+    {"id": 129, "text": "Может ли CTE быть материализован в PostgreSQL?", "options": ["Да, при использовании материализованного представления", "Нет, всегда переписывается в подзапрос", "Да, если используется несколько раз в запросе", "Только в Oracle"], "correct": 3},
+    
+    # 130. Сравнение данных
+    {"id": 130, "text": "Как проверить идентичность данных в двух таблицах с одинаковой структурой?", "options": ["EXCEPT оператор", "FULL OUTER JOIN с фильтром на различия", "Хеширование всех строк", "Все варианты верны"], "correct": 4},
+    
+    # 131. Оконные функции
+    {"id": 131, "text": "Какая функция возвращает значение из следующей строки в окне?", "options": ["LEAD()", "LAG()", "FIRST_VALUE()", "NTH_VALUE()"], "correct": 1},
+    
+    # 132. Индексы
+    {"id": 132, "text": "Для запроса с ILIKE '%text%' какой индекс будет эффективен в PostgreSQL?", "options": ["GIN с pg_trgm", "BTREE с lowercase()", "SP-GiST", "Ни один индекс не поможет"], "correct": 1},
+    
+    # 133. Репликация
+    {"id": 133, "text": "Что такое 'логический декодинг' в PostgreSQL?", "options": ["Преобразование WAL в логические изменения", "Шифрование WAL", "Декодирование бинарных данных", "Компиляция PL/pgSQL функций"], "correct": 1},
+    
+    # 134. Безопасность
+    {"id": 134, "text": "Как ограничить доступ к столбцу 'salary' только для HR-менеджеров?", "options": ["Row-Level Security (RLS)", "Создать представление без этого столбца", "GRANT SELECT на столбец конкретной роли", "Все варианты верны"], "correct": 4},
+    
+    # 135. JSON
+    {"id": 135, "text": "Как эффективно искать по массиву тегов в JSONB поле?", "options": ["GIN индекс с оператором @>", "BTREE индекс на jsonb_array_elements()", "FULLTEXT поиск по тегам", "Нормализовать данные в отдельную таблицу"], "correct": 1},
+    
+    # 136. Партиционирование
+    {"id": 136, "text": "Как добавить новую партицию для диапазона дат в PostgreSQL 12+?", "options": ["CREATE TABLE partition ... PARTITION OF table;", "ALTER TABLE table ADD PARTITION ...", "pg_partman расширение", "Невозможно после создания таблицы"], "correct": 1},
+    
+    # 137. Хранимые процедуры
+    {"id": 137, "text": "Что такое 'procedural code' в контексте СУБД?", "options": ["Хранимые процедуры и функции", "DDL скрипты", "ETL процессы", "Прикладной код приложения"], "correct": 1},
+    
+    # 138. Оптимизация
+    {"id": 138, "text": "Как избежать N+1 проблемы в ORM?", "options": ["Eager loading связанных данных", "Использовать JOIN в запросе", "Кэширование результатов", "Все варианты верны"], "correct": 4},
+    
+    # 139. Временные зоны
+    {"id": 139, "text": "Как сохранить timestamp с часовым поясом в PostgreSQL?", "options": ["TIMESTAMPTZ", "TIMESTAMP WITH TIME ZONE", "CONVERT TO UTC при вставке", "Хранить как BIGINT (Unix timestamp)"], "correct": 1},
+    
+    # 140. Сравнение СУБД
+    {"id": 140, "text": "Какая СУБД поддерживает автоматическое управление партициями (AUTOMATIC PARTITIONING)?", "options": ["Oracle 19c", "PostgreSQL 15", "MySQL 8.0", "SQL Server 2022"], "correct": 1},
+    
+    # 141. Бекапы
+    {"id": 141, "text": "Что такое PITR (Point-in-Time Recovery)?", "options": ["Восстановление к конкретному моменту времени через WAL", "Создание снапшотов на лету", "Резервное копирование только измененных блоков", "Репликация только изменений"], "correct": 1},
+    
+    # 142. Геопространственные данные
+    {"id": 142, "text": "Какой тип данных в PostGIS используется для хранения маршрута?", "options": ["LINESTRING", "POLYGON", "MULTIPOINT", "GEOMETRYCOLLECTION"], "correct": 1},
+    
+    # 143. Оконные функции
+    {"id": 143, "text": "Как вычислить накопительную сумму продаж по месяцам?", "options": ["SUM(sales) OVER (ORDER BY month ROWS UNBOUNDED PRECEDING)", "CUMULATIVE_SUM(sales)", "RUNNING TOTAL sales", "SUM(sales) OVER (PARTITION BY month)"], "correct": 1},
+    
+    # 144. Триггеры
+    {"id": 144, "text": "Какой тип триггера вызывается вместо операции INSERT?", "options": ["INSTEAD OF INSERT", "BEFORE INSERT", "AFTER INSERT", "FOR EACH ROW"], "correct": 1},
+    
+    # 145. Индексы
+    {"id": 145, "text": "Что такое 'partial index' в PostgreSQL?", "options": ["Индекс с условием WHERE", "Индекс только на часть данных", "Неполный индекс при ошибке создания", "Индекс на выражение"], "correct": 1},
+    
+    # 146. Безопасность
+    {"id": 146, "text": "Как включить сквозное шифрование (TLS) для подключений к PostgreSQL?", "options": ["ssl = on в postgresql.conf", "Использовать sslmode=require в строке подключения", "Создать SSL сертификаты", "Все варианты верны"], "correct": 4},
+    
+    # 147. Материализованные представления
+    {"id": 147, "text": "Что происходит при REFRESH MATERIALIZED VIEW CONCURRENTLY?", "options": ["Обновление без блокировки чтения", "Полная блокировка таблицы", "Только добавление новых данных", "Асинхронное обновление в фоне"], "correct": 1},
+    
+    # 148. JSON
+    {"id": 148, "text": "Как объединить несколько JSON-объектов в один в PostgreSQL?", "options": ["JSONB_OBJECT_AGG()", "JSON_BUILD_OBJECT()", "JSON_MERGE()", "ARRAY_TO_JSON(ARRAY_AGG(...))"], "correct": 1},
+    
+    # 149. Системные представления
+    {"id": 149, "text": "Как найти самые тяжелые запросы по времени выполнения в PostgreSQL?", "options": ["pg_stat_statements расширение", "pg_stat_activity с state = 'active'", "EXPLAIN ANALYZE для всех запросов", "slow_query_log"], "correct": 1},
+    
+    # 150. Репликация
+    {"id": 150, "text": "Что такое 'логический срез' (logical slot) в PostgreSQL репликации?", "options": ["Канал для передачи логических изменений", "Слот для хранения WAL файлов", "Логическое разделение данных", "Слот для подключения реплик"], "correct": 1},
+    
+    # 151. Оптимизация
+    {"id": 151, "text": "Какой параметр PostgreSQL управляет размером shared_buffers?", "options": ["shared_buffers", "work_mem", "maintenance_work_mem", "effective_cache_size"], "correct": 1},
+    
+    # 152. Временные таблицы
+    {"id": 152, "text": "Когда использовать UNLOGGED TABLE вместо обычной?", "options": ["Для временных данных, которые можно потерять при сбое", "Для ускорения вставки в 3-5 раз", "Для данных сессии пользователя", "Все варианты верны"], "correct": 4},
+    
+    # 153. Аудит
+    {"id": 153, "text": "Как отследить все изменения в таблице 'users' в течение недели?", "options": ["pgAudit + WAL архивация", "Триггеры на INSERT/UPDATE/DELETE", "Создать историческую таблицу", "Все варианты верны"], "correct": 4},
+    
+    # 154. Сравнение СУБД
+    {"id": 154, "text": "Какая СУБД имеет встроенную поддержку векторных вычислений для аналитики?", "options": ["ClickHouse", "PostgreSQL", "MySQL", "SQLite"], "correct": 1},
+    
+    # 155. Полнотекстовый поиск
+    {"id": 155, "text": "Как настроить поиск по ошибочным написаниям (fuzzy search) в PostgreSQL?", "options": ["pg_trgm расширение + gin_trgm_ops", "pg_similarity", "Использовать SOUNDEX()", "Включить full_text_fuzzy = on"], "correct": 1},
+    
+    # 156. Оконные функции
+    {"id": 156, "text": "Как разделить данные на 4 равные группы по продажам?", "options": ["NTILE(4) OVER (ORDER BY sales)", "RANK() / 4", "PERCENT_RANK() * 4", "WIDTH_BUCKET(sales, 4)"], "correct": 1},
+    
+    # 157. Индексы
+    {"id": 157, "text": "Для какого запроса оптимален GiST-индекс в PostGIS?", "options": ["Поиск точек в прямоугольнике", "Сортировка по времени", "Точные совпадения координат", "Агрегация по районам"], "correct": 1},
+    
+    # 158. Безопасность
+    {"id": 158, "text": "Что такое 'row-level security' (RLS) в SQL Server?", "options": ["Политики доступа на уровне строк", "Шифрование отдельных строк", "Репликация только определенных строк", "Аудит изменений на уровне строк"], "correct": 1},
+    
+    # 159. JSON
+    {"id": 159, "text": "Как в MySQL выполнить запрос к JSON-массиву в поле 'tags'?", "options": ["SELECT * FROM products WHERE JSON_CONTAINS(tags, '\"electronics\"')", "tags @> 'electronics'", "tags::jsonb ? 'electronics'", "JSON_QUERY(tags, '$[*] ? (@ == \"electronics\")')"], "correct": 1},
+    
+    # 160. Партиционирование
+    {"id": 160, "text": "Какой тип партиционирования лучше для таблицы событий с равномерным распределением по времени?", "options": ["RANGE по дате", "LIST по типу события", "HASH по event_id", "COMPOSITE (дата + тип)"], "correct": 1},
+    
+    # 161. Хранимые процедуры
+    {"id": 161, "text": "Как вызвать хранимую процедуру из приложения на Python?", "options": ["cursor.callproc('proc_name', [params])", "EXECUTE proc_name", "CALL proc_name()", "Все варианты верны в зависимости от драйвера"], "correct": 4},
+    
+    # 162. Системные функции
+    {"id": 162, "text": "Как получить размер таблицы в PostgreSQL?", "options": ["pg_total_relation_size('table_name')", "SELECT size FROM pg_tables WHERE tablename='table_name'", "SHOW TABLE SIZE 'table_name'", "TABLESIZE('table_name')"], "correct": 1},
+    
+    # 163. Репликация
+    {"id": 163, "text": "Что такое 'switchover' в контексте отказоустойчивости?", "options": ["Плановая замена основного сервера", "Автоматическое переключение при падении", "Синхронизация реплик", "Ручное восстановление после сбоя"], "correct": 1},
+    
+    # 164. Оптимизация
+    {"id": 164, "text": "Какой уровень изоляции позволяет избежать 'write skew'?", "options": ["SERIALIZABLE", "REPEATABLE READ", "READ COMMITTED", "SNAPSHOT ISOLATION"], "correct": 1},
+    
+    # 165. Временные зоны
+    {"id": 165, "text": "Как конвертировать локальное время в UTC в PostgreSQL?", "options": ["AT TIME ZONE 'UTC'", "CONVERT_TZ(local_time, 'Europe/Moscow', 'UTC')", "SET timezone = 'UTC'", "TO_UTC(local_time)"], "correct": 1},
+    
+    # 166. Геопространственные данные
+    {"id": 166, "text": "Как рассчитать площадь полигона в квадратных километрах в PostGIS?", "options": ["ST_Area(geom::geography) / 1000000", "ST_Area(geom) * 0.000001", "ST_Area_KM2(geom)", "Использовать проекцию EPSG:3857"], "correct": 1},
+    
+    # 167. CTE
+    {"id": 167, "text": "Может ли CTE ссылаться на сам себя несколько раз в рекурсивном запросе?", "options": ["Да, через UNION ALL", "Нет, только один раз", "Только в Oracle", "Только через материализованное представление"], "correct": 1},
+    
+    # 168. Индексы
+    {"id": 168, "text": "Что такое 'covering index' в SQL Server?", "options": ["Индекс, включающий все столбцы запроса", "Индекс для покрытия партиций", "Индекс для материализованных представлений", "Индекс с INCLUDE колонками"], "correct": 4},
+    
+    # 169. Безопасность
+    {"id": 169, "text": "Как ограничить количество одновременных подключений для роли?", "options": ["ALTER ROLE ... CONNECTION LIMIT", "max_connections_per_user", "pgbouncer ограничения", "Нельзя ограничить на уровне СУБД"], "correct": 1},
+    
+    # 170. JSON
+    {"id": 170, "text": "Как удалить поле из JSONB объекта в PostgreSQL?", "options": ["jsonb_set(data, '{field}', 'null', true) - 'field'", "JSON_REMOVE(data, '$.field')", "data::jsonb - 'field'", "UPDATE data SET field = NULL WHERE ..."], "correct": 3},
+    
+    # 171. Миграции
+    {"id": 171, "text": "Что такое 'schema migration'?", "options": ["Изменение структуры БД с контролем версий", "Перенос данных между СУБД", "Обновление PostgreSQL до новой версии", "Миграция данных в облако"], "correct": 1},
+    
+    # 172. Системные представления
+    {"id": 172, "text": "Как найти 'висячие' транзакции в PostgreSQL?", "options": ["pg_stat_activity с state = 'idle in transaction'", "SELECT * FROM pg_locks WHERE granted = false", "pg_blocking_pids()", "Все варианты верны"], "correct": 4},
+    
+    # 173. Репликация
+    {"id": 173, "text": "Что такое 'каскадная репликация'?", "options": ["Реплика может быть мастером для других реплик", "Автоматическое масштабирование реплик", "Репликация только критических данных", "Синхронизация через промежуточный сервер"], "correct": 1},
+    
+    # 174. Оконные функции
+    {"id": 174, "text": "Как вычислить отношение продаж текущего дня к среднему за месяц?", "options": ["sales / AVG(sales) OVER (PARTITION BY EXTRACT(MONTH FROM date))", "sales / MONTHLY_AVG(sales)", "RATIO_TO_REPORT(sales) OVER (PARTITION BY month)", "sales / (SELECT AVG(sales) FROM ...)"], "correct": 1},
+    
+    # 175. Индексы
+    {"id": 175, "text": "Для какого случая оптимален SP-GiST индекс?", "options": ["Деревья решений и несбалансированные данные", "Точные совпадения строк", "Диапазонные запросы по числам", "Полнотекстовый поиск"], "correct": 1},
+    
+    # 176. Безопасность
+    {"id": 176, "text": "Что такое 'dynamic data masking' в SQL Server?", "options": ["Маскировка данных для неавторизованных пользователей", "Шифрование данных на лету", "Анонимизация в тестовых средах", "Скрытие системных таблиц"], "correct": 1},
+    
+    # 177. Временные таблицы
+    {"id": 177, "text": "Когда использовать табличные переменные вместо временных таблиц в T-SQL?", "options": ["Для небольших наборов данных (<1000 строк)", "Когда не нужна статистика", "Для упрощения кода", "Все варианты верны"], "correct": 4},
+    
+    # 178. JSON
+    {"id": 178, "text": "Как преобразовать реляционную таблицу в JSON-массив в PostgreSQL?", "options": ["json_agg(row_to_json(t))", "TO_JSON(array_agg(*))", "JSON_BUILD_ARRAY(*)", "Использовать FOR JSON AUTO"], "correct": 1},
+    
+    # 179. Партиционирование
+    {"id": 179, "text": "Как автоматизировать создание новых партиций при партиционировании по дате?", "options": ["pg_partman расширение", "CRON задача для создания партиций", "Триггер BEFORE INSERT", "Вручную перед началом нового периода"], "correct": 1},
+    
+    # 180. Геопространственные данные
+    {"id": 180, "text": "Как проверить пересечение двух геометрий в PostGIS?", "options": ["ST_Intersects(geom1, geom2)", "geom1 && geom2", "ST_Contains(geom1, geom2)", "ST_Overlaps(geom1, geom2)"], "correct": 1},
+    
+    # 181. Оптимизация
+    {"id": 181, "text": "Что такое 'index-only scan'?", "options": ["Чтение данных только из индекса без обращения к таблице", "Сканирование только части индекса", "Использование индекса для сортировки", "Оптимизация через покрывающий индекс"], "correct": 1},
+    
+    # 182. Триггеры
+    {"id": 182, "text": "Как избежать рекурсивного вызова триггера при обновлении в нем же таблицы?", "options": ["pg_trigger_depth() = 0", "SET session_replication_role = replica", "CREATE TRIGGER ... WHEN (NOT pg_trigger_depth() > 0)", "Нельзя избежать"], "correct": 1},
+    
+    # 183. Сравнение СУБД
+    {"id": 183, "text": "Какая СУБД поддерживает 'временные таблицы' (system-versioned tables)?", "options": ["SQL Server 2016+", "PostgreSQL 13+", "MySQL 8.0+", "Oracle 12c+"], "correct": 1},
+    
+    # 184. Безопасность
+    {"id": 184, "text": "Как включить аудит всех DDL операций в PostgreSQL?", "options": ["pgAudit + log_statement = 'ddl'", "CREATE TRIGGER audit_ddl ON DATABASE", "log_min_messages = ddl", "Невозможно без расширений"], "correct": 1},
+    
+    # 185. JSON
+    {"id": 185, "text": "Как искать по шаблону в JSON-строке в PostgreSQL?", "options": ["data->>'name' ILIKE '%john%'", "jsonb_path_exists(data, '$.name ? (@ like_regex \"john\")')", "JSON_SEARCH(data, 'all', '%john%')", "Все варианты верны"], "correct": 2},
+    
+    # 186. Системные функции
+    {"id": 186, "text": "Как получить список всех индексов таблицы в PostgreSQL?", "options": ["\\d table_name", "SELECT * FROM pg_indexes WHERE tablename = 'table_name'", "SHOW INDEXES FROM table_name", "pg_catalog.pg_class JOIN pg_index"], "correct": 2},
+    
+    # 187. Репликация
+    {"id": 187, "text": "Что такое 'логическая репликация' в PostgreSQL?", "options": ["Репликация на уровне таблиц и строк", "Репликация бинарных WAL файлов", "Синхронизация только изменений", "Репликация только для чтения"], "correct": 1},
+    
+    # 188. Оконные функции
+    {"id": 188, "text": "Как вычислить процентиль 90 для продаж по регионам?", "options": ["PERCENTILE_CONT(0.9) WITHIN GROUP (ORDER BY sales) OVER (PARTITION BY region)", "PERCENTILE(90) OVER (region)", "NTILE(90) OVER (ORDER BY sales)", "APPROX_PERCENTILE(sales, 0.9)"], "correct": 1},
+    
+    # 189. Индексы
+    {"id": 189, "text": "Для запроса WHERE category = 'books' AND rating > 4 какой составной индекс оптимален?", "options": ["(category, rating)", "(rating, category)", "Отдельные индексы на category и rating", "GIN индекс на оба поля"], "correct": 1},
+    
+    # 190. Безопасность
+    {"id": 190, "text": "Что такое 'privilege escalation' в контексте безопасности БД?", "options": ["Получение прав выше текущих через уязвимость", "Автоматическое повышение прав при длительном сеансе", "Ошибка в управлении ролями", "Уязвимость в механизме аутентификации"], "correct": 1},
+    
+    # 191. Временные таблицы
+    {"id": 191, "text": "Что происходит с TEMPORARY TABLE после COMMIT в PostgreSQL?", "options": ["Таблица сохраняется до конца сессии", "Удаляется автоматически", "Очищается, но структура остается", "Зависит от параметра temp_table_on_commit"], "correct": 1},
+    
+    # 192. JSON
+    {"id": 192, "text": "Как обновить вложенный объект в JSONB поле?", "options": ["jsonb_set(data, '{address,city}', '\"London\"')", "data->'address'->'city' = 'London'", "JSON_MODIFY(data, '$.address.city', 'London')", "UPDATE data SET address.city = 'London' WHERE ..."], "correct": 1},
+    
+    # 193. Геопространственные данные
+    {"id": 193, "text": "Как преобразовать координаты из EPSG:4326 в EPSG:3857 в PostGIS?", "options": ["ST_Transform(geom, 3857)", "ST_SetSRID(geom, 3857)", "CONVERT_SRID(geom, 4326, 3857)", "PROJ4_TRANSFORM(geom)"], "correct": 1},
+    
+    # 194. Оптимизация
+    {"id": 194, "text": "Что делает параметр work_mem в PostgreSQL?", "options": ["Определяет память для сортировок и хеш-соединений", "Размер буфера для записи WAL", "Память для обработки запросов", "Кэш для индексов"], "correct": 1},
+    
+    # 195. Триггеры
+    {"id": 195, "text": "Какой тип события не поддерживается в триггерах PostgreSQL?", "options": ["BEFORE TRUNCATE", "AFTER CREATE TABLE", "INSTEAD OF UPDATE на представлении", "BEFORE INSERT OR UPDATE"], "correct": 2},
+    
+    # 196. Сравнение СУБД
+    {"id": 196, "text": "Какая СУБД имеет встроенную поддержку машинного обучения (ML) внутри запросов?", "options": ["SQL Server 2019+", "PostgreSQL с расширениями", "Oracle 20c", "Все перечисленные"], "correct": 4},
+    
+    # 197. Безопасность
+    {"id": 197, "text": "Как включить Transparent Data Encryption (TDE) в SQL Server?", "options": ["CREATE DATABASE ENCRYPTION KEY", "ALTER DATABASE ... SET ENCRYPTION ON", "Включить в настройках сервера", "Использовать Always Encrypted"], "correct": 2},
+    
+    # 198. JSON
+    {"id": 198, "text": "Как в MySQL создать индекс на JSON-поле 'data->'$.price'?", "options": ["ALTER TABLE products ADD INDEX idx_price ((CAST(data->'$.price' AS UNSIGNED)))", "CREATE INDEX idx_price ON products (data->'$.price')", "GIN индекс на JSON поле", "Нельзя создать индекс на JSON поле"], "correct": 1},
+    
+    # 199. Системные представления
+    {"id": 199, "text": "Как найти запросы, блокирующие другие запросы в PostgreSQL?", "options": ["pg_blocking_pids()", "SELECT * FROM pg_locks WHERE granted = false", "pg_stat_activity с wait_event_type = 'Lock'", "Все варианты верны"], "correct": 4},
+    
+    # 200. Репликация
+    {"id": 200, "text": "Что такое 'synchronous_commit' в PostgreSQL?", "options": ["Гарантирует запись WAL на реплику перед подтверждением", "Синхронизирует транзакции между репликами", "Режим ожидания синхронизации", "Подтверждение транзакции после записи в память"], "correct": 1}
+]
+
 # Хранилище активных сессий
 active_test = {}
 
