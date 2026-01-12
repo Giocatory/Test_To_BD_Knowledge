@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}SQL Тест{% endblock %}</title>
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(150deg, #7a5a00 0%, #014211a2 100%);
+      --correct-color: #27ae60;
+      --incorrect-color: #e74c3c;
+      --warning-color: #f39c12;
+      --background-light: #f5f7fa;
+      --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      --border-radius: 12px;
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--background-light);
+      color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    
+    .card:hover {
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    }
+    
+    .card-header {
+      background: var(--primary-gradient);
+      color: white;
+      padding: 25px 30px;
+      text-align: center;
+    }
+    
+    .card-header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    
+    .card-header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .card-body {
+      padding: 30px;
+    }
+    
+    .timer {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--warning-color);
+      margin: 20px 0;
+      padding: 15px;
+      background: #fff8e6;
+      border-radius: 8px;
+      border: 2px dashed var(--warning-color);
+    }
+    
+    .question {
+      margin-bottom: 25px;
+      padding: 20px;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      background: #fafbff;
+      transition: var(--transition);
+    }
+    
+    .question:hover {
+      border-color: #3498db;
+      transform: translateX(5px);
+    }
+    
+    .question-number {
+      font-size: 1.3rem;
+      color: #3498db;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    
+    .options label {
+      display: block;
+      padding: 12px 15px;
+      margin: 8px 0;
+      border-radius: 6px;
+      background: #f8f9ff;
+      border: 1px solid #e9ecef;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .options label:hover {
+      background: #eef2ff;
+      border-color: #3498db;
+    }
+    
+    .options input[type="radio"]:checked + span {
+      color: #2c3e50;
+      font-weight: 600;
+    }
+    
+    .btn {
+      display: inline-block;
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 600;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 47, 255, 0.4);
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 26, 143, 0.6);
+    }
+    
+    .btn-block {
+      display: block;
+      width: 100%;
+      max-width: 300px;
+      margin: 30px auto;
+    }
+    
+    .score-badge {
+      display: inline-block;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin: 10px 0;
+    }
+    
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    .stat-item {
+      text-align: center;
+      padding: 15px;
+      min-width: 120px;
+      border-radius: 8px;
+      background: #f8f9ff;
+    }
+    
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #3498db;
+    }
+    
+    .result-item {
+      margin-bottom: 25px;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #3498db;
+    }
+    
+    .result-correct {
+      border-left-color: var(--correct-color);
+      background: #e8f5e9;
+    }
+    
+    .result-incorrect {
+      border-left-color: var(--incorrect-color);
+      background: #fef6f6;
+    }
+    
+    .answer-box {
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+    }
+    
+    .user-correct {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .user-incorrect {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .correct-answer {
+      background: #e3f2fd;
+      border-left: 3px solid #2196f3;
+      padding: 10px 15px;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+    
+    .status-icon {
+      font-size: 24px;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    
+    @media (max-width: 768px) {
+      .card-body {
+        padding: 20px;
+      }
+      
+      .card-header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .question-number {
+        font-size: 1.1rem;
+      }
+      
+      .btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+      }
+      
+      .stats {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .stat-item {
+        width: 100%;
+      }
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        {% block header %}{% endblock %}
+      </div>
+      <div class="card-body">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

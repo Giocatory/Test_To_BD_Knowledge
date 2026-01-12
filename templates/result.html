@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Результаты теста{% endblock %}
+
+{% block header %}
+  <h1>🎉 Результаты тестирования</h1>
+  <p>Ваша успеваемость по SQL</p>
+{% endblock %}
+
+{% block content %}
+  <div style="text-align: center; margin-bottom: 30px;">
+    <div style="font-size: 4.5rem; font-weight: bold; margin: 10px 0; 
+                background: linear-gradient(135deg, var(--correct-color) 0%, #3498db 100%);
+                -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+      {{ score }}%
+    </div>
+    
+    <div class="score-badge 
+      {% if score >= 90 %}style='background: var(--correct-color); color: white;'
+      {% elif score >= 80 %}style='background: var(--warning-color); color: white;'
+      {% elif score >= 70 %}style='background: var(--warning-color); color: white;'
+      {% else %}style='background: var(--incorrect-color); color: white;'{% endif %}">
+      {% if score >= 90 %}Отлично!
+      {% elif score >= 80 %}Хорошо
+      {% elif score >= 70 %}Удовлетворительно
+      {% else %}НЕ СДАЛ!!!{% endif %}
+    </div>
+    
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-number">{{ correct }}</div>
+        <div>правильных</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">{{ total - correct }}</div>
+        <div>ошибок</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">{{ total }}</div>
+        <div>всего</div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="margin-bottom: 40px;">
+    {% for result in results %}
+      <div class="result-item {% if result.is_correct %}result-correct{% else %}result-incorrect{% endif %}">
+        <div class="question-number">
+          <span class="status-icon">{% if result.is_correct %}✅{% else %}❌{% endif %}</span>
+          Вопрос {{ loop.index }}
+        </div>
+        <div style="margin: 12px 0; font-size: 1.1rem; line-height: 1.5;">
+          {{ result.question }}
+        </div>
+        
+        <div class="answer-box {% if result.is_correct %}user-correct{% else %}user-incorrect{% endif %}">
+          {% if result.user_answer %}
+            Ваш ответ: <strong>{{ result.user_answer }}. {{ result.options[result.user_answer - 1] }}</strong>
+          {% else %}
+            <em>Вопрос не был отвечен</em>
+          {% endif %}
+        </div>
+        
+        <div class="correct-answer">
+          Правильный ответ: <strong>{{ result.correct_answer }}. {{ result.options[result.correct_answer - 1] }}</strong>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  
+  <form method="post" action="/restart">
+    <button type="submit" class="btn btn-block">
+      🔄 Пройти тест заново
+    </button>
+  </form>
+  
+  <div style="margin-top: 25px; padding: 15px; background: #e8f4ff; border-radius: 8px; border: 1px solid #bbdefb; text-align: center;">
+    <strong>💡 Совет:</strong> Проанализируйте ошибки и повторите темы, в которых вы испытали затруднения.
+  </div>
+{% endblock %}

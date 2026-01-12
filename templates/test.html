@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Тест по SQL{% endblock %}
+
+{% block header %}
+  <h1>📝 Тест по SQL</h1>
+  <p>Время на выполнение: 10 минут</p>
+{% endblock %}
+
+{% block extra_head %}
+  <meta http-equiv="refresh" content="{{ time_left }};url=/result/{{ test_id }}">
+{% endblock %}
+
+{% block content %}
+  <div class="timer" id="timer-container">
+    ⏱️ Осталось времени: <span id="timer">{{ time_left }}</span> секунд
+  </div>
+  
+  <form method="post" action="/submit/{{ test_id }}" id="test-form">
+    {% for q in questions %}
+      <div class="question">
+        <div class="question-number">{{ loop.index }}. {{ q.text }}</div>
+        <div class="options">
+          {% for opt in q.options %}
+            <label>
+              <input type="radio" name="{{ q.id }}" value="{{ loop.index }}" required 
+                     style="margin-right: 10px; transform: scale(1.2);">
+              <span>{{ loop.index }}. {{ opt }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+    
+    <button type="submit" class="btn btn-block">
+      ✅ Завершить тест
+    </button>
+  </form>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let timeLeft = {{ time_left }};
+      const timerEl = document.getElementById('timer');
+      const timerContainer = document.getElementById('timer-container');
+      const form = document.getElementById('test-form');
+      
+      // Цветовая индикация таймера
+      const updateTimerStyle = () => {
+        if (timeLeft < 60) {
+          timerContainer.style.borderColor = '#e74c3c';
+          timerContainer.style.backgroundColor = '#fef6f6';
+          timerContainer.style.color = '#e74c3c';
+        } else if (timeLeft < 120) {
+          timerContainer.style.borderColor = '#f39c12';
+          timerContainer.style.backgroundColor = '#fff8e6';
+          timerContainer.style.color = '#f39c12';
+        }
+      };
+      
+      const countdown = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+        updateTimerStyle();
+        
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          form.requestSubmit(); // Автоматическая отправка при истечении времени
+        }
+      }, 1000);
+      
+      updateTimerStyle();
+    });
+  </script>
+{% endblock %}
