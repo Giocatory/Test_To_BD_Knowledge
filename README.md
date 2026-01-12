@@ -51,7 +51,7 @@
 
 1. **Клонируйте репозиторий:**
    ```bash
-   git clone https://github.com/Giocatory/Test_To_BD_Knowledge
+   git clone https://github.com/Giocatory/Test_To_BD_Knowledge.git
    cd sql-knowledge-test
    ```
 
